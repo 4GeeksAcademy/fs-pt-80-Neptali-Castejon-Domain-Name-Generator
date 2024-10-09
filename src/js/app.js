@@ -22,8 +22,51 @@ import "../style/index.css";
         city: null
     }
  */
+
 function render(variables = {}) {
   console.log("These are the current variables: ", variables); // print on the console
+
+  // Comprobar si las URLs tienen el prefijo correcto para Twitter, GitHub, LinkedIn e Instagram
+  if (variables.twitter && !variables.twitter.startsWith("https://")) {
+    variables.twitter = `https://twitter.com/${variables.twitter}`;
+  }
+  if (variables.github && !variables.github.startsWith("https://")) {
+    variables.github = `https://github.com/${variables.github}`;
+  }
+  if (variables.linkedin && !variables.linkedin.startsWith("https://")) {
+    variables.linkedin = `https://linkedin.com/in/${variables.linkedin}`;
+  }
+  if (variables.instagram && !variables.instagram.startsWith("https://")) {
+    variables.instagram = `https://instagram.com/${variables.instagram}`;
+  }
+
+  // Actualizar la ciudad basada en el país seleccionado
+  if (variables.country === "Venezuela") {
+    variables.city = "Caracas";
+  } else if (variables.country === "USA") {
+    variables.city = "Miami";
+  } else if (variables.country === "Canada") {
+    variables.city = "Toronto";
+  } else if (variables.country === "Germany") {
+    variables.city = "Munich";
+  }
+
+  // Actualizar el valor del select de ciudad basado en la ciudad seleccionada
+  if (variables.city === "Caracas") {
+    variables.country = "Venezuela";
+  } else if (variables.city === "Miami") {
+    variables.country = "USA";
+  } else if (variables.city === "Toronto") {
+    variables.country = "Canada";
+  } else if (variables.city === "Munich") {
+    variables.country = "Germany";
+  }
+
+  // Actualizar el valor del select de ciudad y país en el DOM
+  document.querySelector('select[for="city"]').value = variables.city || "";
+  document.querySelector('select[for="country"]').value =
+    variables.country || "";
+
   // here we ask the logical questions to make decisions on how to build the html
   // if includeCover==false then we reset the cover code without the <img> tag to make the cover transparent.
   let cover = `<div class="cover"><img src="${variables.background}" /></div>`;
@@ -33,14 +76,50 @@ function render(variables = {}) {
   document.querySelector("#widget_content").innerHTML = `<div class="widget">
             ${cover}
           <img src="${variables.avatarURL}" class="photo" />
-          <h1>Lucy Boilett</h1>
-          <h2>Web Developer</h2>
-          <h3>Miami, USA</h3>
-          <ul class="position-right">
-            <li><a href="https://twitter.com/4geeksacademy"><i class="fab fa-twitter"></i></a></li>
-            <li><a href="https://github.com/4geeksacademy"><i class="fab fa-github"></i></a></li>
-            <li><a href="https://linkedin.com/school/4geeksacademy"><i class="fab fa-linkedin"></i></a></li>
-            <li><a href="https://instagram.com/4geeksacademy"><i class="fab fa-instagram"></i></a></li>
+          <h1>${
+            (variables.name && variables.name !== "Lucy") ||
+            (variables.lastName && variables.lastName !== "Boilett")
+              ? `${
+                  variables.name && variables.name !== "Lucy"
+                    ? variables.name
+                    : ""
+                } ${
+                  variables.lastName && variables.lastName !== "Boilett"
+                    ? variables.lastName
+                    : ""
+                }`
+              : "Lucy Boilett"
+          }
+</h1>
+          <h2>${variables.role ? variables.role : "Web Developer"}</h2>
+          <h3>${variables.city ? variables.city : "Miami"}, ${
+    variables.country ? variables.country : "USA"
+  }</h3>
+          <ul class=" ${
+            variables.socialMediaPosition
+              ? variables.socialMediaPosition
+              : "position-right"
+          }">
+            <li><a href="${
+              variables.twitter
+                ? variables.twitter
+                : "https://twitter.com/4geeksacademy"
+            }"><i class="fab fa-twitter"></i></a></li>
+            <li><a href="${
+              variables.github
+                ? variables.github
+                : "https://github.com/4geeksacademy"
+            }"><i class="fab fa-github"></i></a></li>
+            <li><a href="${
+              variables.linkedin
+                ? variables.linkedin
+                : "https://linkedin.com/school/4geeksacademy"
+            }"><i class="fab fa-linkedin"></i></a></li>
+            <li><a href="${
+              variables.instagram
+                ? variables.instagram
+                : "https://instagram.com/4geeksacademy"
+            }"><i class="fab fa-instagram"></i></a></li>
           </ul>
         </div>
     `;
